@@ -3086,11 +3086,12 @@ class TouchChemControllerCommands extends ChemControllerCommands {
                 out.setPayloadByte(2, Math.round((pHSetpoint * 100) % 256) || 0);
                 out.setPayloadByte(3, Math.floor(orpSetpoint / 256) || 0);
                 out.setPayloadByte(4, Math.round(orpSetpoint % 256) || 0);
-                out.setPayloadByte(5, phEnabled ? acidTankLevel + 1 : 0);
-                out.setPayloadByte(6, orpEnabled ? orpTankLevel + 1 : 0);
+                out.setPayloadByte(5, 0);//phEnabled ? acidTankLevel + 1 : 0);
+                out.setPayloadByte(6, 0);//orpEnabled ? orpTankLevel + 1 : 0);
                 out.setPayloadByte(7, Math.floor(calciumHardness / 256) || 0);
                 out.setPayloadByte(8, Math.round(calciumHardness % 256) || 0);
-                out.setPayloadByte(9, parseInt(data.cyanuricAcid, 10), chem.cyanuricAcid || 0);
+                out.setPayloadByte(9, 0);//, chem.cyanuricAcid || 0);
+                out.setPayloadByte(10, parseInt(data.cyanuricAcid, 10));
                 out.setPayloadByte(11, Math.floor(alkalinity / 256) || 0);
                 out.setPayloadByte(12, Math.round(alkalinity % 256) || 0);
                 out.setPayloadByte(13, Math.round(saltLevel / 50) || 20);
