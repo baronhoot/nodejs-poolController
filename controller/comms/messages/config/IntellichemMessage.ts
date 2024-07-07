@@ -17,6 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 import { Inbound, Outbound } from "../Messages";
 import { sys, ControllerType } from "../../../Equipment";
+import { logger } from "../../../../logger/Logger";
 import { state } from "../../../State";
 import { webApp } from "../../../../web/Server";
 

@@ -115,9 +115,11 @@ export class EquipmentStateMessage {
         }
     }
     public static process(msg: Inbound) {
+        logger.warn(`EquipmentStateMessage.process: action=${msg.action}`);
         Message.headerSubByte = msg.header[1];
         //console.log(process.memoryUsage());
         if (msg.action === 2 && state.isInitialized && sys.controllerType === ControllerType.Nixie) {
+            logger.warn(`EquipmentStateMessage.process msg.action === 2 && state.isInitialized && sys.controllerType === ControllerType.Nixie`);
             // Start over because we didn't have communication before but we now do.  This will fall into the if
             // below so that it goes through the intialization process.  In this case we didn't see an OCP when we started
             // but there clearly is one now.
@@ -129,11 +131,13 @@ export class EquipmentStateMessage {
             })();
         }
         if (!state.isInitialized) {
+            logger.warn(`!state.isInitialized`);
             msg.isProcessed = true;
             if (msg.action === 2) EquipmentStateMessage.initController(msg);
             else return;
         }
         else if (!sys.board.modulesAcquired) {
+            logger.warn(`!sys.board.modulesAcquired`);
             msg.isProcessed = true;
             if (msg.action === 204) {
                 let board = sys.board as IntelliCenterBoard;
@@ -155,6 +159,7 @@ export class EquipmentStateMessage {
         switch (msg.action) {
             case 2:
                 {
+                    logger.warn('MSG ACTION 2');
                     let fnTempFromByte = function (byte) {
                         return byte;
                         //return (byte & 0x007F) * (((byte & 0x0080) > 0) ? -1 : 1); // RKS: 09-26-20 Not sure how negative temps are represented but this aint it.  Temps > 127 have been witnessed.
@@ -214,6 +219,7 @@ export class EquipmentStateMessage {
                     state.delay = msg.extractPayloadByte(12) & 63; // not sure what 64 val represents
                     state.freeze = (msg.extractPayloadByte(9) & 0x08) === 0x08;
                     if (sys.controllerType === ControllerType.IntelliCenter) {
+                        logger.warn('sys.controllerType === ControllerType.IntelliCenter');
                         state.temps.waterSensor1 = fnTempFromByte(msg.extractPayloadByte(14));
                         if (sys.bodies.length > 2 || sys.equipment.dual) state.temps.waterSensor2 = fnTempFromByte(msg.extractPayloadByte(15));
                         // We are making an assumption here in that the circuits are always labeled the same.
@@ -307,6 +313,7 @@ export class EquipmentStateMessage {
                         if (sys.general.options.clockSource !== 'server' || typeof sys.general.options.adjustDST === 'undefined') sys.general.options.adjustDST = (msg.extractPayloadByte(23) & 0x01) === 0x0; //23
                     }
                     else {
+                        logger.warn('sys.controllerType !== ControllerType.IntelliCenter');
                         state.temps.waterSensor1 = fnTempFromByte(msg.extractPayloadByte(14));
                         state.temps.air = fnTempFromByte(msg.extractPayloadByte(18));
                         let solar: Heater = sys.heaters.getItemById(2);
@@ -373,6 +380,7 @@ export class EquipmentStateMessage {
                         // RKS: Added check for i10d for water sensor 2.
                         if (sys.bodies.length > 2 || sys.equipment.dual) state.temps.waterSensor2 = fnTempFromByte(msg.extractPayloadByte(15));
                         if (sys.bodies.length > 0) {
+                            logger.warn('sys.bodies.length > 0');
                             // const tbody: BodyTempState = state.temps.bodies.getItemById(6, true);
                             const tbody: BodyTempState = state.temps.bodies.getItemById(1, true);
                             const cbody: Body = sys.bodies.getItemById(1);
@@ -390,6 +398,7 @@ export class EquipmentStateMessage {
                             let heatStatus = sys.board.valueMaps.heatStatus.getValue('off');
                             if (tbody.isOn) {
                                 if (tbody.heaterOptions.hybrid > 0) {
+                                    logger.warn('IS HYBRID');
                                     // ETi When heating with
                                     // Heatpump (1) = 12    H:true S:false C:false
                                     // Gas (2) = 48         H:false S:true C:false
@@ -418,13 +427,14 @@ export class EquipmentStateMessage {
                                     const cooling = solarActive && tbody.temp > tbody.setPoint;
                                     if (heaterActive) heatStatus = sys.board.valueMaps.heatStatus.getValue('heater');
                                     if (cooling) heatStatus = sys.board.valueMaps.heatStatus.getValue('cooling');
-                                    else if (solarActive) heatStatus = sys.board.valueMaps.heatStatus.getValue('solar');
+                                    logger.warn(`1! heaterActive: ${heaterActive}, solarActive: ${solarActive}, cooling: ${cooling}, heatStatus: ${heatStatus}`);
                                 }
                             }
                             tbody.heatStatus = heatStatus;
                             sys.board.schedules.syncScheduleHeatSourceAndSetpoint(cbody, tbody);
                         }
                         if (sys.bodies.length > 1) {
+                            logger.warn('sys.bodies.length > 1');
                             // const tbody: BodyTempState = state.temps.bodies.getItemById(1, true);
                             const tbody: BodyTempState = state.temps.bodies.getItemById(2, true);
                             const cbody: Body = sys.bodies.getItemById(2);
@@ -439,6 +449,7 @@ export class EquipmentStateMessage {
                             tbody.name = cbody.name;
                             tbody.circuit = cbody.circuit = 1;
                             let heatStatus = sys.board.valueMaps.heatStatus.getValue('off');
+                            logger.warn(`2! tbody: ${JSON.stringify(tbody)}`);
                             if (tbody.isOn) {
                                 if (tbody.heaterOptions.hybrid > 0) {
                                     // This can be the only heater solar cannot be installed with this.
@@ -459,6 +470,7 @@ export class EquipmentStateMessage {
                                     if (heaterActive) heatStatus = sys.board.valueMaps.heatStatus.getValue('heater');
                                     if (cooling) heatStatus = sys.board.valueMaps.heatStatus.getValue('cooling');
                                     else if (solarActive) heatStatus = sys.board.valueMaps.heatStatus.getValue('solar');
+                                    logger.warn(`2! heaterActive: ${heaterActive}, solarActive: ${solarActive}, cooling: ${cooling}, heatStatus: ${heatStatus}`);
                                 }
                             }
                             tbody.heatStatus = heatStatus;
@@ -499,6 +511,7 @@ export class EquipmentStateMessage {
                         case ControllerType.IntelliCom:
                         case ControllerType.IntelliTouch:
                             {
+                                logger.warn('case ControllerType.IntelliTouch');
                                 EquipmentStateMessage.processTouchCircuits(msg);
                                 // This will toggle the group states depending on the state of the individual circuits.
                                 sys.board.circuits.syncCircuitRelayStates();

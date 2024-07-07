@@ -21,6 +21,7 @@ import { sys, ControllerType } from "../../../Equipment";
 import { logger } from "../../../../logger/Logger";
 import { webApp } from "../../../../web/Server";
 import { Timestamp, utils } from "../../../Constants"
+
 export class IntelliChemStateMessage {
     public static process(msg: Inbound) {
         if (sys.controllerType === ControllerType.Unknown) return;
@@ -43,6 +44,7 @@ export class IntelliChemStateMessage {
                 let schem = state.chemControllers.getItemById(controller.id);
                 if (schem.lastComm + (30 * 1000) < new Date().getTime()) {
                     // We have not talked to the chem controller in 30 seconds so we have lost communication.
+                    logger.warn(`No recent IntelliChem comms since ${schem.lastComm} vs ${new Date().getTime()}`);
                     schem.status = schem.alarms.comms = 1;
                 }
                 msg.isProcessed = true;
