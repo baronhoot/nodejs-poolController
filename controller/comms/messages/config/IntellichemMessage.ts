@@ -100,11 +100,12 @@ export class IntellichemMessage {
 
             schem.ph.dosingStatus = (msg.extractPayloadByte(35) & 0x30) >> 4; // mask 00xx0000 and shift bit 5 & 6
             schem.orp.dosingStatus = (msg.extractPayloadByte(35) & 0xC0) >> 6; // mask xx000000 and shift bit 7 & 8
-            schem.status = msg.extractPayloadByte(36) & 0x80 >> 7; // to be verified as comms lost
-            schem.ph.manualDosing = (msg.extractPayloadByte(36) & 0x08) === 1 ? true : false;
-            chem.orp.useChlorinator = (msg.extractPayloadByte(36) & 0x10) === 1 ? true : false;
-            chem.HMIAdvancedDisplay = (msg.extractPayloadByte(36) & 0x20) === 1 ? true : false;
-            chem.ph.phSupply = (msg.extractPayloadByte(36) & 0x40) === 1 ? true : false; // acid pH dosing = 1; base pH dosing = 0;
+            // high bit is actually correlated with Chlorinator activity/ORP dosing active
+            // schem.status = msg.extractPayloadByte(36) & 0x80 >> 7; // to be verified as comms lost
+            schem.ph.manualDosing = (msg.extractPayloadByte(36) & 0x08) >> 3 === 1 ? true : false;
+            chem.orp.useChlorinator = (msg.extractPayloadByte(36) & 0x10) >> 4 === 1 ? true : false;
+            chem.HMIAdvancedDisplay = (msg.extractPayloadByte(36) & 0x20) >> 5 === 1 ? true : false;
+            chem.ph.phSupply = (msg.extractPayloadByte(36) & 0x40) >> 6 === 1 ? true : false; // acid pH dosing = 1; base pH dosing = 0;
             chem.firmware = `${msg.extractPayloadByte(38)}.${msg.extractPayloadByte(37).toString().padStart(3, '0')}`
             schem.warnings.waterChemistry = msg.extractPayloadByte(39);
             schem.lastComm = new Date().getTime();

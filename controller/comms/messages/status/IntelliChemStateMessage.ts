@@ -245,11 +245,13 @@ export class IntelliChemStateMessage {
         schem.ph.dosingStatus = (msg.extractPayloadByte(34) & 0x30) >> 4; // mask 00xx0000 and shift bit 5 & 6
         schem.orp.dosingStatus = (msg.extractPayloadByte(34) & 0xC0) >> 6; // mask xx000000 and shift bit 7 & 8
         //      35 : Delays = 0
-        schem.status = (msg.extractPayloadByte(35) & 0x80) >> 7; // to be verified as comms lost
-        schem.ph.manualDosing = (msg.extractPayloadByte(35) & 0x08) === 1 ? true : false;
-        chem.orp.useChlorinator = (msg.extractPayloadByte(35) & 0x10) === 1 ? true : false;
-        chem.HMIAdvancedDisplay = (msg.extractPayloadByte(35) & 0x20) === 1 ? true : false;
-        chem.ph.phSupply = (msg.extractPayloadByte(35) & 0x40) === 1 ? 'acid' : 'base'; // acid pH dosing = 1; base pH dosing = 0;
+        // high bit is actually correlated with Chlorinator activity/ORP dosing active
+        // schem.status = (msg.extractPayloadByte(35) & 0x80) >> 7; // to be verified as comms lost
+        // logger.warn(`IntelliChemStateMessage status ${schem.status}`);
+        schem.ph.manualDosing = (msg.extractPayloadByte(35) & 0x08) >> 3 === 1 ? true : false;
+        chem.orp.useChlorinator = (msg.extractPayloadByte(35) & 0x10) >> 4 === 1 ? true : false;
+        chem.HMIAdvancedDisplay = (msg.extractPayloadByte(35) & 0x20) >> 5 === 1 ? true : false;
+        chem.ph.phSupply = (msg.extractPayloadByte(35) & 0x40) >> 6 === 1 ? 'acid' : 'base'; // acid pH dosing = 1; base pH dosing = 0;
         //      36-37 : Firmware = 80,1 = 1.080
         chem.firmware = `${msg.extractPayloadByte(37)}.${msg.extractPayloadByte(36).toString().padStart(3, '0')}`
         //      38 : Water Chemistry Warning
