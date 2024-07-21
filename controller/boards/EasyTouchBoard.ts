@@ -653,7 +653,7 @@ export class TouchConfigQueue extends ConfigQueue {
                 dest: 16,
                 action: this.curr.setcategory,
                 payload: [itm],
-                retries: 3,
+                retries: 5,
                 response: Response.create({
                     response: true
                     , callback: () => {
@@ -853,7 +853,7 @@ export class TouchScheduleCommands extends ScheduleCommands {
                         0,
                         0,
                         0],
-                    retries: 3
+                    retries: 5
                 });
                 await out.sendAsync();
             }
@@ -939,7 +939,7 @@ export class TouchScheduleCommands extends ScheduleCommands {
                         0,
                         0,
                         0],
-                    retries: 3
+                    retries: 5
                 });
                 await out.sendAsync();
             }
@@ -1091,7 +1091,7 @@ class TouchSystemCommands extends SystemCommands {
             dest: 16,
             action: 133,
             payload: [hour, min, dow, date, month, year, 0, dst],
-            retries: 3,
+            retries: 5,
             response: true
         });
         try {
@@ -1132,7 +1132,7 @@ class TouchSystemCommands extends SystemCommands {
                     action: 138,
                     payload: [data.id],
                     response: true,
-                    retries: 3
+                    retries: 5
                 });
                 out.appendPayloadString(data.name, 11);
                 await out.sendAsync();
@@ -1243,7 +1243,7 @@ class TouchBodyCommands extends BodyCommands {
                 let out = Outbound.create({
                     dest: 16,
                     action: 168,
-                    retries: 3,
+                    retries: 5,
                     response: true,
                 });
                 out.insertPayloadBytes(0, 0, 9);
@@ -1295,7 +1295,7 @@ class TouchBodyCommands extends BodyCommands {
             dest: 16,
             action: 136,
             payload: [temp1, temp2, mode2 << 2 | mode1, cool],
-            retries: 3,
+            retries: 5,
             response: true
         });
         try {
@@ -1363,7 +1363,7 @@ class TouchBodyCommands extends BodyCommands {
             dest: 16,
             action: 136,
             payload: [temp1, temp2, mode2 << 2 | mode1, cool],
-            retries: 3,
+            retries: 5,
             response: true
         });
         try {
@@ -1416,7 +1416,7 @@ class TouchBodyCommands extends BodyCommands {
             dest: 16,
             action: 136,
             payload: [temp1, temp2, mode2 << 2 | mode1, cool],
-            retries: 3,
+            retries: 5,
             response: true
         });
         try {
@@ -1466,7 +1466,7 @@ class TouchBodyCommands extends BodyCommands {
             dest: 16,
             action: 136,
             payload: [temp1, temp2, mode2 << 2 | mode1, setPoint],
-            retries: 3,
+            retries: 5,
             response: true
         });
         if (sl.enabled) {
@@ -1512,7 +1512,7 @@ export class TouchCircuitCommands extends CircuitCommands {
                     let out = Outbound.create({
                         action: 139,
                         payload: [parseInt(data.id, 10), typeByte | (utils.makeBool(data.freeze) ? 64 : 0), nameByte, 0, 0],
-                        retries: 3,
+                        retries: 5,
                         response: true
                     });
                     await out.sendAsync();
@@ -1574,7 +1574,7 @@ export class TouchCircuitCommands extends CircuitCommands {
         let out = Outbound.create({
             action: 134,
             payload: [id, val ? 1 : 0],
-            retries: 3,
+            retries: 5,
             response: true,
             scope: `circuitState${id}`
         });
@@ -1639,7 +1639,7 @@ export class TouchCircuitCommands extends CircuitCommands {
 
                     let out = Outbound.create({
                         action: 167,
-                        retries: 3,
+                        retries: 5,
                         response: true
                     });
                     const lgcircuits = group.circuits.get();
@@ -1662,7 +1662,7 @@ export class TouchCircuitCommands extends CircuitCommands {
 
                         let out = Outbound.create({
                             action: 167,
-                            retries: 3,
+                            retries: 5,
                             payload: [1],
                             response: true
                         });
@@ -1680,7 +1680,7 @@ export class TouchCircuitCommands extends CircuitCommands {
 
                         out = Outbound.create({
                             action: 167,
-                            retries: 3,
+                            retries: 5,
                             payload: [2],
                             response: true
                         });
@@ -1784,7 +1784,7 @@ export class TouchCircuitCommands extends CircuitCommands {
                 let out = Outbound.create({
                     action: 96,
                     payload: [theme, 0],
-                    retries: 3,
+                    retries: 5,
                     response: true,
                     scope: `lightGroupTheme${id}`
                 });
@@ -1874,7 +1874,7 @@ class TouchFeatureCommands extends FeatureCommands {
             let out = Outbound.create({
                 action: 139,
                 payload: [id, typeByte | (utils.makeBool(data.freeze) ? 64 : 0), nameByte, 0, 0],
-                retries: 3,
+                retries: 5,
                 response: true
             });
             await out.sendAsync();
@@ -1996,7 +1996,7 @@ class TouchChlorinatorCommands extends ChlorinatorCommands {
                         payload: [(disabled ? 0 : isDosing ? 100 << 1 : spaSetpoint << 1) + 1, disabled ? 0 : isDosing ? 100 : poolSetpoint,
                         utils.makeBool(superChlorinate) && superChlorHours > 0 ? superChlorHours + 128 : 0,  // We only want to set the superChlor when the user sends superChlor = true
                             0, 0, 0, 0, 0, 0, 0],
-                        retries: 3,
+                        retries: 5,
                         response: true,
                     });
                     await out.sendAsync();
@@ -2022,7 +2022,7 @@ class TouchChlorinatorCommands extends ChlorinatorCommands {
                     dest: 16,
                     action: 217,
                     payload: [0],
-                    retries: 3,
+                    retries: 5,
                     response: true,
                 })
                 await out.sendAsync();
@@ -2048,7 +2048,7 @@ class TouchChlorinatorCommands extends ChlorinatorCommands {
                     dest: 16,
                     action: 153,
                     payload: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                    retries: 3,
+                    retries: 5,
                     response: true
                 });
                 await out.sendAsync();
@@ -3076,7 +3076,7 @@ class TouchChemControllerCommands extends ChemControllerCommands {
                 let out = Outbound.create({
                     action: 211,
                     payload: [],
-                    retries: 3, // We are going to try 4 times.
+                    retries: 5, // We are going to try 4 times.
                     response: Response.create({ protocol: Protocol.IntelliChem, action: 1, payload: [211] }),
                     onAbort: () => { }
                 });
@@ -3142,7 +3142,7 @@ class TouchChemControllerCommands extends ChemControllerCommands {
             let out = Outbound.create({
                 action: 211,
                 response: Response.create({ protocol: Protocol.IntelliChem, action: 1, payload: [211] }),
-                retries: 3,
+                retries: 5,
                 payload: [],
             });
             // I think this payload should delete the controller on Touch.
