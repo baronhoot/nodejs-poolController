@@ -1945,8 +1945,9 @@ export class CircuitStateCollection extends EqStateCollection<CircuitState> {
     public async setLightThemeAsync(id: number, theme: number) { return sys.board.circuits.setLightThemeAsync(id, theme); }
     public getInterfaceById(id: number, add?: boolean): ICircuitState {
         let iCircuit: ICircuitState = null;
-        if (sys.board.equipmentIds.virtualCircuits.isInRange(id))
+        if (sys.board.equipmentIds.virtualCircuits.isInRange(id)) {
             iCircuit = state.virtualCircuits.getItemById(id, add);
+        }
         else if (sys.board.equipmentIds.circuitGroups.isInRange(id)) {
             iCircuit = state.circuitGroups.getInterfaceById(id);
         }
@@ -2534,8 +2535,9 @@ export class ChemDoserState extends EqState implements IChemicalState, IChemCont
             let dh = this.doseHistory[i];
             if (typeof dh.end !== 'undefined'
                 && typeof dh.end.getTime == 'function'
-                && dh.end.getTime() > dtMax
-                && dh.volumeDosed > 0) dailyVolumeDosed += dh.volumeDosed;
+                && dh.end.getTime() > dtMax) {
+                dailyVolumeDosed += dh.volumeDosed;
+            }
             else {
                 logger.info(`Removing dose history ${dh.chem} ${dh.end}`);
                 this.doseHistory.splice(i, 1);
@@ -2925,8 +2927,9 @@ export class ChemicalState extends ChildEqState implements IChemicalState {
             let dh = this.doseHistory[i];
             if (typeof dh.end !== 'undefined'
                 && typeof dh.end.getTime == 'function'
-                && dh.end.getTime() > dtMax
-                && dh.volumeDosed > 0) dailyVolumeDosed += dh.volumeDosed;
+                && dh.end.getTime() > dtMax) {
+                dailyVolumeDosed += dh.volumeDosed;
+            }
             else {
                 logger.info(`Removing dose history ${dh.chem} ${dh.end}`);
                 this.doseHistory.splice(i, 1);
