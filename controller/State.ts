@@ -3026,6 +3026,8 @@ export class ChemicalState extends ChildEqState implements IChemicalState {
     public set freezeProtect(val: boolean) { this.data.freezeProtect = val; }
     public get level(): number { return this.data.level; }
     public set level(val: number) { this.setDataVal('level', val); }
+    public get lastKnownLevel(): number { return this.data.lastKnownLevel; }
+    public set lastKnownLevel(val: number) { this.setDataVal('lastKnownLevel', val); }
     public get setpoint(): number { return this.data.setpoint; }
     public set setpoint(val: number) { this.setDataVal('setpoint', val); }
     public get demand(): number { return this.data.demand || 0; }
@@ -3325,6 +3327,7 @@ export class ChemicalDoseState extends DataLoggerEntry {
     public setpoint: number;
     public demand: number;
     public level: number;
+    public lastKnownLevel: number;
     public volume: number;
     public status: string;
     public volumeDosed: number;
