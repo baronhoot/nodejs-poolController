@@ -4176,8 +4176,6 @@ export class HeaterCommands extends BoardCommands {
             // heater that is not controlled by the OCP then we need to determine whether it should be on.
             let heaters = sys.heaters.toArray();
             let bodies = state.temps.bodies.toArray();
-            logger.warn(`heaters: ${JSON.stringify(heaters)}`)
-            logger.warn(`bodies: ${JSON.stringify(bodies)}`)
             let hon = [];
             for (let i = 0; i < bodies.length; i++) {
                 let body: BodyTempState = bodies[i];
@@ -4226,8 +4224,6 @@ export class HeaterCommands extends BoardCommands {
                         return 0;
                     });
 
-
-                    logger.warn(`bodyHeaters: ${JSON.stringify(bodyHeaters)}`)
 
                     // Alright so now we should have a sorted array that has preference type heaters first.
                     for (let j = 0; j < bodyHeaters.length; j++) {

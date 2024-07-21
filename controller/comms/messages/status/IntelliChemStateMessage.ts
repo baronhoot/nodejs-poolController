@@ -212,7 +212,18 @@ export class IntelliChemStateMessage {
         //      32 : Alarms = 8 = (no alarm)
         const alarms = schem.alarms;
         alarms.flow = msg.extractPayloadByte(32) & 0x01;
-        if (alarms.flow === 0) schem.flowDetected = true;
+        schem.flowDetected = (alarms.flow === 0);
+
+        if (schem.ph.level > 0) {
+            schem.ph.lastKnownLevel = schem.ph.level;
+        } else {
+            schem.ph.level = null
+        }
+        if (schem.orp.level > 0) {
+            schem.orp.lastKnownLevel = schem.orp.level;
+        } else {
+            schem.orp.level = null
+        }
 
         // The pH and ORP alarms are in a word stupid for IntelliChem.  So we are
         // going to override these.
@@ -259,7 +270,9 @@ export class IntelliChemStateMessage {
         //      38 : Water Chemistry Warning
         // The LSI handling is also stupid with IntelliChem so we are going to have our way with it.
         // schem.warnings.waterChemistry = msg.extractPayloadByte(38);
-        schem.calculateSaturationIndex();
+        if (schem.ph.level > 0) {
+            schem.calculateSaturationIndex();
+        }
         if (schem.saturationIndex > chem.lsiRange.high) schem.warnings.waterChemistry = 2;
         else if (schem.saturationIndex < chem.lsiRange.low) schem.warnings.waterChemistry = 1;
         else schem.warnings.waterChemistry = 0;
