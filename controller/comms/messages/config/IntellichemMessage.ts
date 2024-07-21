@@ -59,6 +59,9 @@ export class IntellichemMessage {
 
             chem.isActive = schem.isActive = true;
             schem.ph.probe.level = ((msg.extractPayloadByte(1) * 256) + msg.extractPayloadByte(2)) / 100;
+            if (schem.ph.probe.level > 0) {
+                schem.ph.probe.level += 0.1;
+            }
             schem.orp.probe.level = (msg.extractPayloadByte(3) * 256) + msg.extractPayloadByte(4);
             chem.ph.setpoint = schem.ph.setpoint = ((msg.extractPayloadByte(5) * 256) + msg.extractPayloadByte(6)) / 100;
             chem.orp.setpoint = schem.orp.setpoint = (msg.extractPayloadByte(7) * 256) + msg.extractPayloadByte(8);

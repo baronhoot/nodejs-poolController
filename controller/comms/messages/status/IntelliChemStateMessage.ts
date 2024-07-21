@@ -215,6 +215,7 @@ export class IntelliChemStateMessage {
         schem.flowDetected = (alarms.flow === 0);
 
         if (schem.ph.level > 0) {
+            schem.ph.level += 0.1;
             schem.ph.lastKnownLevel = schem.ph.level;
         } else {
             schem.ph.level = null
